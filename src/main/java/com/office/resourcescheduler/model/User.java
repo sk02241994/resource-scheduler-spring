@@ -2,23 +2,27 @@ package com.office.resourcescheduler.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+import com.office.resourcescheduler.util.Gender;
+import com.office.resourcescheduler.util.Roles;
+
+@Entity()
 @Table(name = "rs_user")
 public class User {
 
 	public User() {
-
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "rs_user_id", length = 11)
-	private Integer userId;
+	private long userId;
 
 	@Column(name = "name", length = 100, nullable = false)
 	private String userName;
@@ -32,14 +36,19 @@ public class User {
 	@Column(name = "is_active", columnDefinition = "tinyint(1) default 1")
 	private boolean isActive;
 
-	@Column(name = "is_admin", columnDefinition = "tinyint(1) default 0")
-	private boolean isAdmin;
+	@Column(name = "role", length = 10)
+	@Enumerated(EnumType.STRING)
+	private Roles role;
 
-	public Integer getUserId() {
+	@Column(name = "gender", length = 1)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -67,14 +76,6 @@ public class User {
 		this.isActive = isActive;
 	}
 
-	public boolean isAdmin() {
-		return isAdmin;
-	}
-
-	public void setAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
-	}
-
 	public String getUserName() {
 		return userName;
 	}
@@ -83,20 +84,39 @@ public class User {
 		this.userName = userName;
 	}
 
-	public User(Integer userId, String userName, String emailAddress, String password, boolean isActive,
-			boolean isAdmin) {
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public void setRole(Roles role) {
+		this.role = role;
+	}
+
+	public Roles getRole() {
+		return this.role;
+	}
+
+	public User(long userId, String userName, String emailAddress, String password, boolean isActive, Roles role,
+			Gender gender) {
+		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.emailAddress = emailAddress;
 		this.password = password;
 		this.isActive = isActive;
-		this.isAdmin = isAdmin;
+		this.role = role;
+		this.gender = gender;
 	}
 
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", userName=" + userName + ", emailAddress=" + emailAddress + ", password="
-				+ password + ", isActive=" + isActive + ", isAdmin=" + isAdmin + "]";
+				+ password + ", isActive=" + isActive + ", role=" + role + ", gender=" + gender + "]";
 	}
 
+	
 }

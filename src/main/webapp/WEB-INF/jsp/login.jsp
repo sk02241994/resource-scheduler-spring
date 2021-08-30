@@ -33,15 +33,15 @@
                     <h1 class="font-weight-bold py-3">Resource Scheduler</h1>
                     <h4>Sign into you account</h4>
                     <%@include file="display-error.jsp"%>
-                    <form action="LoginServlet" method="post">
+                    <form action="login" method="post">
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="text" name="uemail_address" class="form-control my-3 p-4" placeholder="Email Address" maxlength="50" id="">
+                                <input type="text" name="username" class="form-control my-3 p-4" placeholder="Email Address" maxlength="50" id="">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="password" name="user_password" class="form-control my-3 p-4" placeholder="**********" maxlength="50" id="">
+                                <input type="password" name="password" class="form-control my-3 p-4" placeholder="**********" maxlength="50" id="">
                             </div>
                         </div>
                         <div class="form-row">
