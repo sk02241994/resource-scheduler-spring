@@ -8,12 +8,13 @@ function getUser(userId) {
     clearNotice();
     enableButton();
     $.ajax({
-        url: 'UserServlet',
+        url: 'edit',
         type: 'GET',
         dataType: 'json',
-        data: {form_action: 'edit', userId: userId},
+        data: {userId: userId},
         contentType: 'application/json',
         success: function(data){
+        	debugger;
             displayData(data);
         }
     });
@@ -67,12 +68,13 @@ function validateForm(form) {
 
     var form = document.getElementById('edit-form');
 	clearNotice();
+	debugger;
 
 	if (form.name.value.trim().length == 0) {
 		addError('Please enter name.');
 	}
 
-	if (form.email.value.trim().length == 0) {
+	if (form.emailAddress.value.trim().length == 0) {
 		addError('Please enter email.');
 	}
 
@@ -80,7 +82,7 @@ function validateForm(form) {
 		addError('Please enter valid name.');
 	}
 
-	if (form.email.value.trim().length != 0 && isNotValidEmail(form.email.value)) {
+	if (form.emailAddress.value.trim().length != 0 && isNotValidEmail(form.emailAddress.value)) {
 		addError('Please enter valid email.');
 	}
 

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,11 +14,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/display-error.js'/>"></script>
+<%-- <script type="text/javascript" src="<c:url value='/resources/js/display-error.js'/>"></script> --%>
 <script type="text/javascript" src="<c:url value='/resources/js/common.js'/>"></script>
 <script>
     executeEvent(window, 'load', function(){
-    	addError('${SPRING_SECURITY_LAST_EXCEPTION.message}');
+    	addNoticeFormModal(${error_message_modal});
         displayNoticeOnModal();
     });
 </script>
@@ -31,30 +32,26 @@
                 </div>
                 <div class="col-lg-7 px-5 py-5">
                     <h1 class="font-weight-bold py-3">Resource Scheduler</h1>
-                    <h4>Sign into you account</h4>
+                    <h4>Verify token</h4>
+                    <%@include file="notification.jsp" %>
                     <%@include file="display-error.jsp"%>
-                    <form action="login" method="post">
+                    <form:form action="verifiedToken" method="post" modelAttribute="form">
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="text" name="username" class="form-control my-3 p-4" placeholder="Email Address" maxlength="50" id="">
+                                <form:hidden path="emailAddress" class="form-control my-3 p-4" placeholder="Email Address" maxlength="50"/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="password" name="password" class="form-control my-3 p-4" placeholder="**********" maxlength="50" id="">
+                                <form:input path="token" class="form-control my-3 p-4" placeholder="Token"/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <button type="submit" class="btn1 btn-primary">Login</button>
+                                <button type="submit" class="btn1 btn-primary">Submit</button>
                             </div>
                         </div>
-                        <div class="form-row">
-                        	<div class="col-lg-7">
-                        		<a href="reset/forgotPassword">Forgot Password?</a>
-                        	</div>
-                        </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>

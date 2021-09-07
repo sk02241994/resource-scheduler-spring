@@ -1,4 +1,4 @@
-package com.office.resourcescheduler.service;
+package com.office.resourcescheduler.login;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.office.resourcescheduler.model.User;
+import com.office.resourcescheduler.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -22,7 +23,8 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException("No user exists with that email");
 		}
 
-		return new UserPrincipal(user);
+		UserPrincipal userPrincipal = new UserPrincipal(user);
+		return userPrincipal;
 	}
 
 }

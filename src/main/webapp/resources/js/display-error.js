@@ -1,6 +1,8 @@
 
 function addError (errorMessage) {
-	errorList.push(errorMessage);
+	if(errorMessage && errorMessage.trim().length != 0){
+		errorList.push(errorMessage);
+	}
 }
 
 function displayNotice(){

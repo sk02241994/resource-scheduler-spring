@@ -1,4 +1,4 @@
-package com.office.resourcescheduler.service;
+package com.office.resourcescheduler.login;
 
 import java.util.Collection;
 import java.util.Collections;

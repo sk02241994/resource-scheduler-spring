@@ -1,5 +1,9 @@
 package com.office.resourcescheduler.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,12 +13,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.office.resourcescheduler.errorhandler.ValidationServletException;
 import com.office.resourcescheduler.util.Gender;
+import com.office.resourcescheduler.util.PojoSavable;
 import com.office.resourcescheduler.util.Roles;
 
 @Entity()
 @Table(name = "rs_user")
-public class User {
+public class User implements PojoSavable<Void> {
 
 	public User() {
 	}
@@ -22,7 +30,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "rs_user_id", length = 11)
-	private long userId;
+	private Long userId;
 
 	@Column(name = "name", length = 100, nullable = false)
 	private String userName;
@@ -33,8 +41,11 @@ public class User {
 	@Column(name = "password", length = 30, nullable = false)
 	private String password;
 
-	@Column(name = "is_active", columnDefinition = "tinyint(1) default 1")
+	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
+
+	@Column(name = "is_permanent", nullable = false)
+	private boolean isPermanent;
 
 	@Column(name = "role", length = 10)
 	@Enumerated(EnumType.STRING)
@@ -44,11 +55,11 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
-	public long getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -100,14 +111,22 @@ public class User {
 		return this.role;
 	}
 
-	public User(long userId, String userName, String emailAddress, String password, boolean isActive, Roles role,
-			Gender gender) {
-		super();
+	public boolean isPermanent() {
+		return isPermanent;
+	}
+
+	public void setPermanent(boolean isPermanent) {
+		this.isPermanent = isPermanent;
+	}
+
+	public User(Long userId, String userName, String emailAddress, String password, boolean isActive,
+			boolean isPermanent, Roles role, Gender gender) {
 		this.userId = userId;
 		this.userName = userName;
 		this.emailAddress = emailAddress;
 		this.password = password;
 		this.isActive = isActive;
+		this.isPermanent = isPermanent;
 		this.role = role;
 		this.gender = gender;
 	}
@@ -118,5 +137,38 @@ public class User {
 				+ password + ", isActive=" + isActive + ", role=" + role + ", gender=" + gender + "]";
 	}
 
-	
+	@Override
+	public void sanitize() {
+		setUserName(StringUtils.trimToNull(getUserName()));
+		setEmailAddress(StringUtils.trimToNull(getEmailAddress()));
+	}
+
+	@Override
+	public void validate(Void variable) throws ValidationServletException {
+
+		List<String> error = new ArrayList<>();
+
+		if (StringUtils.isBlank(getUserName())) {
+			error.add("Please enter name.");
+		}
+
+		if (StringUtils.isNotBlank(getUserName())
+				&& !Pattern.matches("^[a-zA-Z]{1,60}\\s?[a-zA-Z]{1,30}$", getUserName())) {
+			error.add("Please enter valid name.");
+		}
+
+		if (StringUtils.isBlank(getEmailAddress())) {
+			error.add("Please enter email.");
+		}
+
+		if (StringUtils.isNotBlank(getEmailAddress())
+				&& !Pattern.matches("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$", getEmailAddress())) {
+			error.add("Please enter valid email.");
+		}
+
+		if (!error.isEmpty()) {
+			throw new ValidationServletException(error);
+		}
+	}
+
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,30 +32,30 @@
                 </div>
                 <div class="col-lg-7 px-5 py-5">
                     <h1 class="font-weight-bold py-3">Resource Scheduler</h1>
-                    <h4>Sign into you account</h4>
+                    <h4>Change password</h4>
                     <%@include file="display-error.jsp"%>
-                    <form action="login" method="post">
+                    <form:form action="saveChangePassword" method="post" modelAttribute="form">
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="text" name="username" class="form-control my-3 p-4" placeholder="Email Address" maxlength="50" id="">
+                                <form:hidden path="emailAddress" class="form-control my-3 p-4" placeholder="Email Address"/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <input type="password" name="password" class="form-control my-3 p-4" placeholder="**********" maxlength="50" id="">
+                                <form:input path="password" class="form-control my-3 p-4" placeholder="New Password"/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <button type="submit" class="btn1 btn-primary">Login</button>
+                                <form:input path="confirmPassword" class="form-control my-3 p-4" placeholder="Confirm Password"/>
                             </div>
                         </div>
                         <div class="form-row">
-                        	<div class="col-lg-7">
-                        		<a href="reset/forgotPassword">Forgot Password?</a>
-                        	</div>
+                            <div class="col-lg-7">
+                                <button type="submit" class="btn1 btn-primary">Submit</button>
+                            </div>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>

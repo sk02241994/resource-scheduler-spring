@@ -1,5 +1,6 @@
 package com.office.resourcescheduler.config;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.util.AntPathMatcher;
 
 import com.office.resourcescheduler.util.Constants;
 import com.office.resourcescheduler.util.Roles;
@@ -23,9 +23,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private LoginSuccessHandler successHandler;
 	
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) {
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		
 		auth.authenticationProvider(getAuthProvider());
 	}
 
@@ -42,9 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.csrf().disable()
 		.authorizeRequests()
-		.antMatchers(Constants.LOGIN, Constants.RESOURCES).permitAll()
-		.antMatchers(Constants.RESOURCES_URI, Constants.USERS).hasRole(Roles.ADMIN.toString())
-		.antMatchers(Constants.RESERVATIONS, Constants.CALENDAR).hasAnyRole(Roles.ADMIN.toString(), Roles.USER.toString())
+		.antMatchers(Constants.LOGIN, Constants.RESOURCES, Constants.RESET).permitAll()
+		.antMatchers(Constants.RESOURCES_URI, Constants.USERS).hasAuthority(Roles.ADMIN.toString())
+		.antMatchers(Constants.RESERVATIONS, Constants.CALENDAR).hasAnyAuthority(Roles.ADMIN.toString(), Roles.USER.toString())
 		.anyRequest()
 		.authenticated()
 		.and()
@@ -52,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.formLogin()
 		.loginPage("/login")
+		.successHandler(successHandler)
 		.permitAll()
 		.and()
 		.logout()
