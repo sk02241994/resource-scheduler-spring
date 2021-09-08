@@ -32,13 +32,21 @@ var interval = setInterval(function() {
     if((seconds <= 0) && (minutes <= 0)) { 
         clearInterval(interval);
         $('#timer-cell').hide();
+        $('#resend-cell').show();
         
     }
     timer2 = minutes + ':' + seconds;
 }, 1000);
 
+var resendToken = function(){
+    $('#form').attr('action', 'forgotPasswordSend');
+    $('#form').submit();
+}
 
-
+executeEvent(window, 'load', function(){
+    $('#form').attr('action', 'verifiedToken');
+    $('#resend-cell').hide();
+});
 </script>
 </head>
 <body>
@@ -71,8 +79,11 @@ var interval = setInterval(function() {
                         </div>
                     </form:form>
                     <div class="row" id="timer-cell"> 
-                        <div class="col-xs-6">Token Expires in </div>&nbsp;
-                        <div class="col-xs-6" id="timer"></div>.
+                        <div class="col-xs-4 ml-3">Token Expires in </div>&nbsp;
+                        <div class="col-xs-4" id="timer"></div>.
+                    </div>
+                    <div class="row" id="resend-cell" style="display:none;">
+                       <div class="col-xs-4 ml-3"><a href="#" onclick="resendToken();">Resend Token</a></div>
                     </div>
                 </div>
             </div>
