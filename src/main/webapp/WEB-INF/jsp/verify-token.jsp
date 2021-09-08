@@ -14,13 +14,31 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<%-- <script type="text/javascript" src="<c:url value='/resources/js/display-error.js'/>"></script> --%>
 <script type="text/javascript" src="<c:url value='/resources/js/common.js'/>"></script>
 <script>
-    executeEvent(window, 'load', function(){
-    	addNoticeFormModal(${error_message_modal});
-        displayNoticeOnModal();
-    });
+
+var timer2 = "5:01";
+var interval = setInterval(function() {
+    var timer = timer2.split(':');
+    var minutes = parseInt(timer[0], 10);
+    var seconds = parseInt(timer[1], 10);
+    --seconds;
+    minutes = (seconds < 0) ? --minutes : minutes;
+    seconds = (seconds < 0) ? 59 : seconds;
+    seconds = (seconds < 10) ? '0' + seconds : seconds;
+    //minutes = (minutes < 10) ?  minutes : minutes;
+    $('#timer').html(minutes + ':' + seconds);
+    if (minutes < 0) clearInterval(interval);
+    if((seconds <= 0) && (minutes <= 0)) { 
+        clearInterval(interval);
+        $('#timer-cell').hide();
+        
+    }
+    timer2 = minutes + ':' + seconds;
+}, 1000);
+
+
+
 </script>
 </head>
 <body>
@@ -52,6 +70,10 @@
                             </div>
                         </div>
                     </form:form>
+                    <div class="row" id="timer-cell"> 
+                        <div class="col-xs-6">Token Expires in </div>&nbsp;
+                        <div class="col-xs-6" id="timer"></div>.
+                    </div>
                 </div>
             </div>
         </div>
