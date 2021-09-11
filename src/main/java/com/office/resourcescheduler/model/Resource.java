@@ -1,6 +1,7 @@
 package com.office.resourcescheduler.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
 
 import com.office.resourcescheduler.errorhandler.ValidationException;
+import com.office.resourcescheduler.service.ReservationImpl;
 import com.office.resourcescheduler.util.PojoDeletable;
 import com.office.resourcescheduler.util.PojoSavable;
 
@@ -146,8 +148,11 @@ public class Resource implements PojoSavable<Void>, PojoDeletable<Void> {
 	}
 
 	@Override
-	public void validateDelete(Void variable) throws ValidationException {
-
+	public void validateDelete(Void resourceId) throws ValidationException {
+		List<Reservation> reservations = ReservationImpl.getInstance().findAllByResourceId(getResourceId());
+		if(!reservations.isEmpty()) {
+			throw new ValidationException(Arrays.asList("Unable to delete as the resource is already in use."));
+		}
 	}
 
 }

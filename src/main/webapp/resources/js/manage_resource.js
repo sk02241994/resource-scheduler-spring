@@ -42,7 +42,7 @@ function displayData(data) {
  */
 function deleteResource(resourceId) {
 	if (confirm("Do you really want to delete this ?")) {
-		goToPage('ResourceServlet?form_action=delete&resourceId=' + resourceId);
+		goToPage('delete?resourceId=' + resourceId);
 	}
 }
 

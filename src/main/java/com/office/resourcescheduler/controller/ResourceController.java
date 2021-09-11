@@ -21,12 +21,13 @@ import com.office.resourcescheduler.util.NoticeInterface;
 
 @Controller
 @RequestMapping(ResourceController.RESOURCE_URI)
-public class ResourceController implements NoticeInterface{
+public class ResourceController implements NoticeInterface {
 
 	public static final String RESOURCE_URI = "/resource";
 	public static final String SAVE = "/save";
 	public static final String LIST = "/list";
 	public static final String EDIT = "/edit";
+	public static final String DELETE = "/delete";
 	public static final String RESOURCE_PAGE = "resource";
 	public static final String VIEW = "view";
 	public static final String FORM = "form";
@@ -76,8 +77,26 @@ public class ResourceController implements NoticeInterface{
 			mv.addObject(VIEW, resourceImpl.findAll());
 			Gson gson = new Gson();
 			mv.addObject(JS_FORM, gson.toJson(form));
-            displayModalNotice(mv);
+			displayModalNotice(mv);
 			return mv;
 		}
+	}
+
+	@GetMapping(DELETE)
+	public ModelAndView delete(@RequestParam(name = "resourceId") Long resourceId,
+			RedirectAttributes redirectAttributes) {
+		clearNotices();
+		ModelAndView modelAndView = new ModelAndView("redirect:" + RESOURCE_URI + LIST);
+		Resource resource = resourceImpl.findById(resourceId)
+				.orElseThrow();
+		try {
+			resource.validateDelete(null);
+			resourceImpl.deleteById(resource.getResourceId());
+			addSuccessNotice("Resource has been deleted successfully");
+		} catch (ValidationException e) {
+			addErrorNotice(e.getError());
+		}
+		displayNotice(redirectAttributes);
+		return modelAndView;
 	}
 }

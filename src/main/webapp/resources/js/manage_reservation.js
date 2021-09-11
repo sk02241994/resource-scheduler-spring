@@ -81,7 +81,7 @@ function validateEditForm() {
     var formObj = document.getElementById('edit-form');
     clearNotice();
 
-    var resourceName = formObj.resource_name.value
+    /*var resourceName = formObj.resource_name.value
     var startDate = formObj.start_date.value;
     var startTime = formObj.start_time.value;
     var endDate = formObj.end_date.value;
@@ -126,7 +126,7 @@ function validateEditForm() {
     
     if(((Math.round(Date.parse(endDate.value+" "+endTime.value) - Date.parse(startDate.value+" "+startTime.value))/1000)/60 < 10 ) && error == 0){
         addError('Time difference must be greater than 10 minutes.');
-    }
+    }*/
 
     if (hasErrorNotice()) {
         displayNotice();

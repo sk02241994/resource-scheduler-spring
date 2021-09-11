@@ -49,7 +49,7 @@
                             <td class="text-center align-middle"><c:out value="${resource.active ? 'Active' : 'Inactive'}" /></td>
                             <td class="text-center align-middle">
                                     <input data-toggle="modal" data-target="#edit-field" class="btn btn-primary btn-sm" type="button" onclick="getResource('${resource.resourceId}');" value="Edit">
-                                    <input data-toggle="modal" data-target="#edit-field" class="btn btn-primary btn-sm" type="button" onclick="deleteResource('${resource.resourceId}');" value="Delete">
+                                    <input data-toggle="modal" class="btn btn-primary btn-sm" type="button" onclick="deleteResource('${resource.resourceId}');" value="Delete">
                             </td>
                         </tr>
                     </c:forEach>

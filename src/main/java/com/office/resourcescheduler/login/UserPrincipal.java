@@ -54,4 +54,7 @@ public class UserPrincipal implements UserDetails {
 		return this.user.isActive();
 	}
 
+	public Long getUserId() {
+		return this.user.getUserId();
+	}
 }
