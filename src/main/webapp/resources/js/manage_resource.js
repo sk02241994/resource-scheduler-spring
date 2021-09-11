@@ -1,4 +1,3 @@
-
 /**
  * Method will request for editing by passing the id of resource.
  * 
@@ -6,38 +5,34 @@
  */
 function getResource(resourceId) {
 	clearNotice();
-    enableButton();
-    $.ajax({
-        url: 'ResourceServlet',
-        type: 'GET',
-        dataType: 'json',
-        data: {form_action: 'edit', resourceId: resourceId},
-        contentType: 'application/json',
-        success: function(data){
-            displayData(data);
-        }
-    });
+	enableButton();
+	$.ajax({
+		url : 'edit',
+		type : 'GET',
+		dataType : 'json',
+		data : {
+			resourceId : resourceId
+		},
+		contentType : 'application/json',
+		success : function(data) {
+			displayData(data);
+		}
+	});
 
 }
 
-function displayData(data){
-    if(data){
-        $('#edit-form #resourceId').val(data.rsResourceId);
-        $('#edit-form #resourceName').val(data.resourceName);
-        $('#edit-form #description').val(data.resourceDescription);
-
-        var hours = (data.timeLimit / 60);
-        var rHours = Math.floor(hours);
-        $('#edit-form #timeLimitHours').val(isNaN(rHours) || rHours == 0 ? '' : rHours);
-        var minutes = (hours - rHours) * 60;
-        var rminutes = Math.round(minutes);
-        $('#edit-form #timeLimitMinutes').val(isNaN(rminutes) || rminutes == 0 ? '' : rminutes);
-
-        $('#edit-form #maxUserBooking').val(data.maxUserBooking);
-        $('#edit-form #isenabled').prop('checked', data.isEnabled);
-        $('#edit-form #isAllowedMultiple').prop('checked', data.isAllowedMultiple);
-        $('#edit-form #isAllowEmpOnProbation').prop('checked', data.isPermanentEmployee);
-    }
+function displayData(data) {
+	if (data) {
+		$('#edit-form #resourceId').val(data.resourceId);
+		$('#edit-form #resourceName').val(data.resourceName);
+		$('#edit-form #description').val(data.description);
+		$('#edit-form #timeLimitHours').val(data.timeLimitHours == 0 ? '' : data.timeLimitHours);
+		$('#edit-form #timeLimitMinutes').val(data.timeLimitMinutes == 0 ? '' : data.timeLimitMinutes);
+		$('#edit-form #maxUsersAllowed').val(data.maxUsersAllowed);
+		$('#edit-form #enabled1').prop('checked', data.enabled);
+		$('#edit-form #allowedMultiple1').prop('checked', data.allowedMultiple);
+		$('#edit-form #allowEmpOnProbation1').prop('checked', data.allowEmpOnProbation);
+	}
 }
 
 /**
@@ -60,17 +55,34 @@ function deleteResource(resourceId) {
  */
 function validateResource() {
 
-    var formObj = document.getElementById('edit-form');
-    clearNotice();
+	var formObj = document.getElementById('edit-form');
+	clearNotice();
+	if (formObj.resourceName.value.trim().length == 0) {
+		addError('Please enter the resource name.')
+	}
 
-	/*if (formObj.resource_name.value.trim().length == 0) {
-		addError('Please Enter the resource name.')
-	}*/
+	const numberRe = /^\d+$/;
+	var timeLimitHours = formObj.timeLimitHours.value.trim();
+	var timeLimitMinutes = formObj.timeLimitMinutes.value.trim();
+	var maxAllowed = formObj.maxUsersAllowed.value.trim();
+
+	if (timeLimitHours.length != 0 && !numberRe.test(timeLimitHours)) {
+		addError('Please enter valid hours.')
+	}
+
+	if (timeLimitMinutes.length != 0 && !numberRe.test(timeLimitMinutes)) {
+		addError('Please enter valid minutes.')
+	}
+
+	if (maxAllowed.length != 0 && !numberRe.test(allowedMultiple)) {
+		addError('Please enter valid number of users allowed to access the resources.')
+	}
+
 	if (hasErrorNotice()) {
 		displayNotice();
 		return false;
 	}
-	
+
 	disableButton();
 	formObj.submit();
 	return true;

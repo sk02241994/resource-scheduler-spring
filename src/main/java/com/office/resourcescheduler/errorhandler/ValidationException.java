@@ -9,7 +9,7 @@ public class ValidationException extends Exception {
 	private final Collection<String> error;
 
 	public ValidationException(Collection<String> error) {
-		super("Validation exception thrown");
+		super();
 		this.error = error;
 	}
 

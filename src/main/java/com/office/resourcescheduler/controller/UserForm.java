@@ -1,6 +1,9 @@
 package com.office.resourcescheduler.controller;
 
+import java.util.Optional;
+
 import com.office.resourcescheduler.model.User;
+import com.office.resourcescheduler.service.UserServiceImpl;
 import com.office.resourcescheduler.util.FormTransform;
 import com.office.resourcescheduler.util.Gender;
 import com.office.resourcescheduler.util.Roles;
@@ -88,7 +91,12 @@ public class UserForm implements FormTransform<User, Void> {
 
 	@Override
 	public User transform(Void arg) {
-		return new User(userId, name, emailAddress, "user", isActive, isPermanentEmployee,
+        Optional<User> optionalUser = UserServiceImpl.getInstance().findById(userId == null ? 0 : userId);
+        String password = "user";
+        if(optionalUser.isPresent()){
+            password = optionalUser.get().getPassword();
+        }
+		return new User(userId, name, emailAddress, password, isActive, isPermanentEmployee,
 				isAdmin ? Roles.ADMIN : Roles.USER, getGenderFromForm());
 	}
 

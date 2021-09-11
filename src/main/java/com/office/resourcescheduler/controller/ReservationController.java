@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(ReservationController.RESOURCE_URI)
+@RequestMapping(ReservationController.RESERVATION_URI)
 public class ReservationController {
 
-	public static final String RESOURCE_URI = "/resource";
+	public static final String RESERVATION_URI = "/reservation";
 	public static final String LIST = "/list";
 	public static final String SAVE = "/save";
 	

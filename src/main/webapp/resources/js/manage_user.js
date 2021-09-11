@@ -14,22 +14,20 @@ function getUser(userId) {
         data: {userId: userId},
         contentType: 'application/json',
         success: function(data){
-        	debugger;
             displayData(data);
         }
     });
-
 
 }
 
 function displayData(data){
     if(data){
-        $('#edit-form #userId').val(data.rsUserId);
+        $('#edit-form #userId').val(data.userId);
         $('#edit-form #name').val(data.name);
-        $('#edit-form #email').val(data.email_address);
-        $('#edit-form #isenabled').prop('checked', data.isEnabled);
-        $('#edit-form #isadmin').prop('checked', data.isAdmin);
-        $('#edit-form #isPermanentEmployee').prop('checked', data.isPermanentEmployee);
+        $('#edit-form #emailAddress').val(data.emailAddress);
+        $('#edit-form #active1').prop('checked', data.active);
+        $('#edit-form #admin1').prop('checked', data.admin);
+        $('#edit-form #permanentEmployee1').prop('checked', data.permanentEmployee);
         $('input[name="gender"]').each(function(){
             if($(this).val() == data.gender){
                 $(this).prop('checked', 'checked');
@@ -68,7 +66,6 @@ function validateForm(form) {
 
     var form = document.getElementById('edit-form');
 	clearNotice();
-	debugger;
 
 	if (form.name.value.trim().length == 0) {
 		addError('Please enter name.');

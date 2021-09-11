@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.office.resourcescheduler.errorhandler.ValidationServletException;
+import com.office.resourcescheduler.errorhandler.ValidationException;
 import com.office.resourcescheduler.util.Gender;
 import com.office.resourcescheduler.util.PojoSavable;
 import com.office.resourcescheduler.util.Roles;
@@ -38,7 +38,7 @@ public class User implements PojoSavable<Void> {
 	@Column(name = "email_address", length = 50, nullable = false)
 	private String emailAddress;
 
-	@Column(name = "password", length = 30, nullable = false)
+	@Column(name = "password", nullable = false)
 	private String password;
 
 	@Column(name = "is_active", nullable = false)
@@ -132,19 +132,13 @@ public class User implements PojoSavable<Void> {
 	}
 
 	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", emailAddress=" + emailAddress + ", password="
-				+ password + ", isActive=" + isActive + ", role=" + role + ", gender=" + gender + "]";
-	}
-
-	@Override
 	public void sanitize() {
 		setUserName(StringUtils.trimToNull(getUserName()));
 		setEmailAddress(StringUtils.trimToNull(getEmailAddress()));
 	}
 
 	@Override
-	public void validate(Void variable) throws ValidationServletException {
+	public void validate(Void variable) throws ValidationException {
 
 		List<String> error = new ArrayList<>();
 
@@ -167,7 +161,7 @@ public class User implements PojoSavable<Void> {
 		}
 
 		if (!error.isEmpty()) {
-			throw new ValidationServletException(error);
+			throw new ValidationException(error);
 		}
 	}
 

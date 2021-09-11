@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.office.resourcescheduler.errorhandler.ValidationServletException;
+import com.google.gson.Gson;
+import com.office.resourcescheduler.errorhandler.ValidationException;
 import com.office.resourcescheduler.model.User;
-import com.office.resourcescheduler.service.EmailService;
 import com.office.resourcescheduler.service.UserServiceImpl;
 import com.office.resourcescheduler.util.NoticeInterface;
+import com.office.resourcescheduler.util.Roles;
 
 @Controller
 @RequestMapping(UserController.USER_URI)
 public class UserController implements NoticeInterface {
 
+	private static final String JS_FORM = "jsForm";
 	public static final String USER_URI = "/user";
 	public static final String SAVE = "/save";
 	public static final String LIST = "/list";
@@ -30,9 +32,6 @@ public class UserController implements NoticeInterface {
 	public static final String FORM = "form";
 
 	private UserServiceImpl userServiceImpl;
-	
-	@Autowired
-	EmailService service;
 
 	@Autowired
 	public UserController(UserServiceImpl userServiceImpl) {
@@ -41,6 +40,7 @@ public class UserController implements NoticeInterface {
 
 	@PostMapping(SAVE)
 	public ModelAndView save(@ModelAttribute(FORM) UserForm form, RedirectAttributes redirectAttributes) {
+        clearNotices();
 		User user = form.transform(null);
 		try {
 			user.sanitizeAndValidate();
@@ -48,11 +48,14 @@ public class UserController implements NoticeInterface {
 			addSuccessNotice("User details have been saved.");
 			displayNotice(redirectAttributes);
 			return new ModelAndView("redirect:" + USER_URI + LIST);
-		} catch (ValidationServletException e) {
-			addErrorNotice(e.getMessage());
+		} catch (ValidationException e) {
+			addModalErrorNotice(e.getError());
 			ModelAndView mv = new ModelAndView(USER_PAGE);
 			mv.addObject(VIEW, userServiceImpl.findAllUsers());
+			Gson gson = new Gson();
+			mv.addObject(JS_FORM, gson.toJson(form));
 			mv.addObject(FORM, form);
+            displayModalNotice(mv);
 			return mv;
 		}
 
@@ -60,7 +63,6 @@ public class UserController implements NoticeInterface {
 
 	@GetMapping(LIST)
 	public ModelAndView getList() throws Exception {
-		service.sendMail("skaradkar57@gmail.com", "test message", "test");
 		ModelAndView mv = new ModelAndView(USER_PAGE);
 		mv.addObject(VIEW, userServiceImpl.findAllUsers());
 		mv.addObject(FORM, new UserForm());
@@ -69,7 +71,10 @@ public class UserController implements NoticeInterface {
 
 	@GetMapping(EDIT)
 	@ResponseBody
-	public User getById(@RequestParam(name = "userId") Long userId) throws Exception {
-		return userServiceImpl.findById(userId).orElseThrow(Exception::new);
+	public UserForm getById(@RequestParam(name = "userId") Long userId) throws Exception {
+		User user = userServiceImpl.findById(userId)
+				.orElseThrow(Exception::new);
+        return new UserForm(user.getUserId(), user.getUserName(), user.getEmailAddress(), user.isActive(),
+                user.getRole() == Roles.ADMIN, user.isPermanent(), user.getGender().toString());
 	}
 }

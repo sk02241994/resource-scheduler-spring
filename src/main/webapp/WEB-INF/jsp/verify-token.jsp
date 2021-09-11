@@ -60,7 +60,6 @@ executeEvent(window, 'load', function(){
                     <h1 class="font-weight-bold py-3">Resource Scheduler</h1>
                     <h4>Verify token</h4>
                     <%@include file="notification.jsp" %>
-                    <%@include file="display-error.jsp"%>
                     <form:form action="verifiedToken" method="post" modelAttribute="form">
                         <div class="form-row">
                             <div class="col-lg-7">

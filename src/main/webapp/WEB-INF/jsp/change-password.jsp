@@ -33,7 +33,7 @@
                 <div class="col-lg-7 px-5 py-5">
                     <h1 class="font-weight-bold py-3">Resource Scheduler</h1>
                     <h4>Change password</h4>
-                    <%@include file="display-error.jsp"%>
+                    <%@include file="notification.jsp" %>
                     <form:form action="saveChangePassword" method="post" modelAttribute="form">
                         <div class="form-row">
                             <div class="col-lg-7">

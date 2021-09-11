@@ -25,7 +25,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 		UserPrincipal user = (UserPrincipal) authenticate.getPrincipal();
 		String targetUrl = user.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.toString()))
 				? UserController.USER_URI + UserController.LIST
-				: ReservationController.RESOURCE_URI + ReservationController.LIST;
+				: ReservationController.RESERVATION_URI + ReservationController.LIST;
 		clearAuthenticationAttributes(request);
 		getRedirectStrategy().sendRedirect(request, response, targetUrl);
 	}

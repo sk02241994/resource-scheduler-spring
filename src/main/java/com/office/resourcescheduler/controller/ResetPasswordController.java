@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,13 +51,15 @@ public class ResetPasswordController implements NoticeInterface {
 	private EmailService emailService;
 	private UserServiceImpl userServiceImpl;
 	private ResetTokenImpl resetPasswordImpl;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public ResetPasswordController(EmailService emailService, UserServiceImpl userServiceImpl,
-			ResetTokenImpl resetPasswordImpl) {
+			ResetTokenImpl resetPasswordImpl, PasswordEncoder passwordEncoder) {
 		this.emailService = emailService;
 		this.userServiceImpl = userServiceImpl;
 		this.resetPasswordImpl = resetPasswordImpl;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@GetMapping(FORGOT_PASSWORD)
@@ -134,6 +137,7 @@ public class ResetPasswordController implements NoticeInterface {
 		ModelAndView mv = new ModelAndView(REDIRECT + Constants.LOGIN);
 		try {
 			PasswordValidate.validatePassword(resetForm.getPassword(), resetForm.getConfirmPassword());
+			userServiceImpl.updatePassword(passwordEncoder.encode(resetForm.getPassword()), resetForm.getEmailAddress());
 		} catch (ValidationException e) {
 			addErrorNotice(e.getError());
 			displayNotice(redirectAttributes);

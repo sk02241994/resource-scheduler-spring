@@ -14,5 +14,5 @@ public interface ResetTokenRepository extends JpaRepository<ResetToken, Long> {
 	
     @Modifying
     @Query(value = "DELETE FROM password_reset_token where user_id=:userId", nativeQuery = true)
-	void deleteByUserId(Long userId);
+	void deleteByUserId(@Param("userId")Long userId);
 }

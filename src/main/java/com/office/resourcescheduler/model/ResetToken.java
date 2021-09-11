@@ -2,6 +2,7 @@ package com.office.resourcescheduler.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,8 +24,8 @@ public class ResetToken {
 	
 	@Column(name = "token", length = 50)
 	private String token;
-	
-	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+
+	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(nullable = false, name = "user_id")
 	private User user;
 	
