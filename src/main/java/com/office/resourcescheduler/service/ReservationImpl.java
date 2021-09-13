@@ -30,7 +30,7 @@ public class ReservationImpl {
 		return reservationRepository.findAll();
 	}
 
-	public Optional<Reservation> findAllById(Long reservationId) {
+	public Optional<Reservation> findById(Long reservationId) {
 		return reservationRepository.findById(reservationId);
 	}
 
@@ -40,5 +40,9 @@ public class ReservationImpl {
 
 	public List<Reservation> findAllByResourceId(Long resourceId) {
 		return reservationRepository.findByResourceId(resourceId);
+	}
+	
+	public void delete(Long reservationId) {
+		reservationRepository.deleteById(reservationId);
 	}
 }

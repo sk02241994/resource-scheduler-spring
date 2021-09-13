@@ -30,7 +30,8 @@ dependencies {
 	implementation 'com.google.code.gson:gson'
 	implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-	
+    implementation 'org.mnode.ical4j:ical4j:3.0.21'
+
     implementation 'javax.servlet:jstl'
     implementation 'org.hibernate:hibernate-entitymanager'
     //implementation 'org.hibernate:hibernate-core'

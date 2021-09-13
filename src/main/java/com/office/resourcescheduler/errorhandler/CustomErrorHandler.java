@@ -46,6 +46,6 @@ public class CustomErrorHandler implements ErrorController {
 		StringBuilder errorMessage = new StringBuilder();
 		errorMessage.append("Following is the cause of the exception");
 		errorMessage.append(message);
-		service.sendMail(Constants.ERROR_RECEIVER, "From error Controller", errorMessage.toString());
+		service.sendMail(new String[] { Constants.ERROR_RECEIVER }, "From error Controller", errorMessage.toString());
 	}
 }

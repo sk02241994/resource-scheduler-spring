@@ -80,7 +80,7 @@ public class ResetPasswordController implements NoticeInterface {
 		String token = UUID.randomUUID().toString();
 		resetPasswordImpl.deleteByUserid(user.getUserId());
 		ResetToken resetToken = resetPasswordImpl.save(new ResetToken(token, user));
-		emailService.sendMail(user.getEmailAddress(), "Password reset", mailContent(resetToken));
+		emailService.sendMail(new String[] { user.getEmailAddress() }, "Password reset", mailContent(resetToken));
 		addSuccessNotice("Token has been sent on you email. And will expire in 5 minutes.");
 		redirectAttributes.addFlashAttribute(RESET_FORM, resetForm);
 		displayNotice(redirectAttributes);
@@ -137,7 +137,8 @@ public class ResetPasswordController implements NoticeInterface {
 		ModelAndView mv = new ModelAndView(REDIRECT + Constants.LOGIN);
 		try {
 			PasswordValidate.validatePassword(resetForm.getPassword(), resetForm.getConfirmPassword());
-			userServiceImpl.updatePassword(passwordEncoder.encode(resetForm.getPassword()), resetForm.getEmailAddress());
+			userServiceImpl.updatePassword(passwordEncoder.encode(resetForm.getPassword()),
+					resetForm.getEmailAddress());
 		} catch (ValidationException e) {
 			addErrorNotice(e.getError());
 			displayNotice(redirectAttributes);
@@ -151,7 +152,7 @@ public class ResetPasswordController implements NoticeInterface {
 	public String mailContent(ResetToken resetToken) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Your token is: " + resetToken.getToken());
-		builder.append(" and will expire on : "
+		builder.append("\n and will expire on : "
 				+ resetToken.getExpiryDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")));
 		return builder.toString();
 	}

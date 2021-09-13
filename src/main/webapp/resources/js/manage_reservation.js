@@ -24,10 +24,10 @@ function getId(reservationId){
 	clearNotice();
     enableButton();
     $.ajax({
-        url: 'ReservationServlet',
+        url: 'edit',
         type: 'GET',
         dataType: 'json',
-        data: {form_action: 'edit', reservation_id: reservationId},
+        data: {reservationId: reservationId},
         contentType: 'application/json',
         success: function(data){
             displayData(data);
@@ -57,7 +57,7 @@ function displayData(data) {
  */
 function getIdForDelete(resourceId){
 	if(confirm('Do you really want to delete this ?'))
-	  window.location='ReservationServlet?form_action=delete&reservation_id='+resourceId;
+	  window.location='delete?reservationId='+resourceId;
 }
 
 //Method to check if the time is in valid format.

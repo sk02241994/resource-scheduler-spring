@@ -31,12 +31,12 @@ public class CustomErrorController implements ErrorController {
 	private void sendErrorMail(HttpServletRequest request) {
 		String message = (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
 		String url = request.getRequestURL().toString();
-		String status =  ((Integer)request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).toString();
+		String status = ((Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).toString();
 		StringBuilder errorMessage = new StringBuilder();
 		errorMessage.append("Following is the cause of ");
 		errorMessage.append(status + "\n");
 		errorMessage.append(message + "\n");
 		errorMessage.append(url);
-		service.sendMail(Constants.ERROR_RECEIVER, "From error Controller", errorMessage.toString());
+		service.sendMail(new String[] { Constants.ERROR_RECEIVER }, "From error Controller", errorMessage.toString());
 	}
 }
