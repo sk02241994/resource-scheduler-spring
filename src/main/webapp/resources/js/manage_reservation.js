@@ -80,12 +80,11 @@ function isValidDate(date){
 function validateEditForm() {
     var formObj = document.getElementById('edit-form');
     clearNotice();
-
-    /*var resourceName = formObj.resource_name.value
-    var startDate = formObj.start_date.value;
-    var startTime = formObj.start_time.value;
-    var endDate = formObj.end_date.value;
-    var endTime = formObj.end_time.value;
+    var resourceName = formObj.resourceId.value
+    var startDate = formObj.startDate.value;
+    var startTime = formObj.startTime.value;
+    var endDate = formObj.endDate.value;
+    var endTime = formObj.endTime.value;
 
     if(resourceName.length == 0) {
         addError('Please select a resource.');
@@ -119,14 +118,14 @@ function validateEditForm() {
     if(endTime.trim().length != 0 && isValidTime(endTime)) {
         addError('Please enter valid end time.');
     }
-    
-    if (Date.parse(endDate.value + " " + endTime.value) < Date.parse(startDate.value + " " + startTime.value)) {
+
+    if (Date.parse(endDate + " " + endTime) < Date.parse(startDate + " " + startTime)) {
         addError('End Date and time cannot be before start date and time.');
     }
     
-    if(((Math.round(Date.parse(endDate.value+" "+endTime.value) - Date.parse(startDate.value+" "+startTime.value))/1000)/60 < 10 ) && error == 0){
+    if(((Math.round(Date.parse(endDate + " " + endTime) - Date.parse(startDate + " " + startTime))/1000)/60 < 10 )){
         addError('Time difference must be greater than 10 minutes.');
-    }*/
+    }
 
     if (hasErrorNotice()) {
         displayNotice();

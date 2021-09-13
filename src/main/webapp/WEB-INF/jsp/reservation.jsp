@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.css"/>
-        <link rel="stylesheet" type="text/css" href="/ResourceScheduler/css/common.css" />
+        <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/common.css'/>" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -46,9 +46,9 @@
                         <th class="text-center" scope="col">Start Time</th>
                         <th class="text-center" scope="col">End Date</th>
                         <th class="text-center" scope="col">End Time</th>
-                        <c:if test="${sessionScope.loggedInUser.admin}">
+                        <sec:authorize access="hasAuthority('ADMIN')">
                             <th class="text-center" scope="col">Action</th>
-                        </c:if>
+                        </sec:authorize>
                     </tr>
                 </thead>
                 <tbody>
