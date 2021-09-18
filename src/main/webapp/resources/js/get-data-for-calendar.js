@@ -4,10 +4,10 @@ function getId(reservationId){
     enableButton();
     $('#display-all-day-data').modal('hide');
     $.ajax({
-        url: 'ReservationServlet',
+        url: 'edit',
         type: 'GET',
         dataType: 'json',
-        data: {form_action: 'edit', reservation_id: reservationId, form_type: 'calendar'},
+        data: {reservationId: reservationId},
         contentType: 'application/json',
         success: function(data){
             displayDataOnEdit(data);
@@ -20,7 +20,11 @@ function displayDataOnEdit(data) {
     if(data){
         $('#edit-form #reservationId').val(data.reservationId);
         $('#edit-form #userId').val(data.userId);
-        $('#edit-form #resourceName option[value='+ data.resourceId +']').attr("selected", "selected");
+        $('#edit-form #resourceId').children().each(function(index, element) {
+          if(element.value == data.resourceId){
+                element.selected = true;    
+            }
+        });
         $('#edit-form #startDate').val(data.startDate);
         $('#startDate').datepicker("setDate", data.startDate);
         $('#edit-form #startTime').val(data.startTime);
@@ -33,7 +37,7 @@ function displayDataOnEdit(data) {
 // Method to request for delete a particular reservation by passing it's id.
 function getIdForDelete(id) {
 	if(confirm('Do you really want to delete this ?'))
-		window.location='ReservationServlet?form_type=calendar&form_action=delete&reservation_id='+ id + '&form_type=calendar';
+		window.location='delete?reservationId='+ id ;
 }
 
 // Method to display all the reservations on the particular date in the calendar. 

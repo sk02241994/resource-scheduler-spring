@@ -40,7 +40,11 @@ function displayData(data) {
     if(data){
         $('#edit-form #reservationId').val(data.reservationId);
         $('#edit-form #userId').val(data.userId);
-        $('#edit-form #resourceName option[value='+ data.resourceId +']').attr("selected", "selected");
+        $('#edit-form #resourceId').children().each(function(index, element) {
+          if(element.value == data.resourceId){
+                element.selected = true;    
+            }
+        });
         $('#edit-form #startDate').val(data.startDate);
         $('#startDate').datepicker("setDate", data.startDate);
         $('#edit-form #startTime').val(data.startTime);

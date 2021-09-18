@@ -9,6 +9,8 @@ public class ReservationView {
 	private String startTime;
 	private String endDate;
 	private String endTime;
+    private Long userId;
+    private Long resourceId;
 
 	public Long getReservationId() {
 		return reservationId;
@@ -66,8 +68,24 @@ public class ReservationView {
 		this.endTime = endTime;
 	}
 
+    public void setUserId(Long userId){
+        this.userId = userId;
+    }
+
+    public Long getUserId(){
+        return userId;
+    }
+
+    public void setResourceId(Long resourceId){
+        this.resourceId = resourceId;
+    }
+
+    public Long getResourceId(){
+        return resourceId;
+    }
+
 	public ReservationView(Long reservationId, String userName, String resourceName, String startDate, String startTime,
-			String endDate, String endTime) {
+			String endDate, String endTime, Long userId, Long resourceId) {
 		this.reservationId = reservationId;
 		this.userName = userName;
 		this.resourceName = resourceName;
@@ -75,6 +93,8 @@ public class ReservationView {
 		this.startTime = startTime;
 		this.endDate = endDate;
 		this.endTime = endTime;
+        this.userId = userId;
+        this.resourceId = resourceId;
 	}
 
 }

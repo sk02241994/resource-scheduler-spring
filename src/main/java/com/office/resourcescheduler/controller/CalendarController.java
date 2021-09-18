@@ -1,34 +1,33 @@
 package com.office.resourcescheduler.controller;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.mail.MessagingException;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.web.bind.annotation.PostMapping;
+import javax.mail.MessagingException;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
-import com.office.resourcescheduler.errorhandler.ValidationException;
-import com.office.resourcescheduler.login.UserPrincipal;
 import com.office.resourcescheduler.model.Reservation;
+import com.office.resourcescheduler.errorhandler.ValidationException;
 import com.office.resourcescheduler.model.Resource;
 import com.office.resourcescheduler.model.User;
+import com.office.resourcescheduler.login.UserPrincipal;
 import com.office.resourcescheduler.service.EmailService;
 import com.office.resourcescheduler.service.ReservationImpl;
 import com.office.resourcescheduler.service.ResourceImpl;
@@ -37,72 +36,78 @@ import com.office.resourcescheduler.util.NoticeInterface;
 import com.office.resourcescheduler.util.Roles;
 
 @Controller
-@RequestMapping(ReservationController.RESERVATION_URI)
-public class ReservationController implements NoticeInterface {
+@RequestMapping(CalendarController.CALENDAR_URI)
+public class CalendarController implements NoticeInterface{
 
-	private static final String HH_MM = "HH:mm";
-	private static final String MM_DD_YYYY = "MM/dd/yyyy";
-	public static final String RESERVATION_URI = "/reservation";
-	public static final String LIST = "/list";
-	public static final String SAVE = "/save";
-	public static final String EDIT = "/edit";
-	public static final String DELETE = "/delete";
-	public static final String VIEW = "view";
-	public static final String FORM = "form";
-	public static final String JS_FORM = "jsForm";
-	public static final String RESERVATION_PAGE = "reservation";
+    private static final String HH_MM = "HH:mm";
+    private static final String MM_DD_YYYY = "MM/dd/yyyy";
+    public static final String CALENDAR_URI = "/calendar";
+    public static final String LIST = "/list";
+    public static final String SAVE = "/save";
+    public static final String EDIT = "/edit";
+    public static final String DELETE = "/delete";
+    public static final String VIEW = "view";
+    public static final String FORM = "form";
+    public static final String JS_FORM = "jsForm";
+    public static final String CALENDAR = "calendar";
 
-	private ReservationImpl reservationImpl;
-	private UserServiceImpl userServiceImpl;
-	private ResourceImpl resourceImpl;
-	private EmailService emailService;
+    private ReservationImpl reservationImpl;
+    private UserServiceImpl userServiceImpl;
+    private ResourceImpl resourceImpl;
+    private EmailService emailService;
 
-	@Autowired
-	public ReservationController(ReservationImpl reservationImpl, UserServiceImpl userServiceImpl,
-			ResourceImpl resourceImpl, EmailService emailService) {
-		this.reservationImpl = reservationImpl;
-		this.userServiceImpl = userServiceImpl;
-		this.resourceImpl = resourceImpl;
-		this.emailService = emailService;
-	}
+    @Autowired
+    public CalendarController(ReservationImpl reservationImpl, UserServiceImpl userServiceImpl,
+           ResourceImpl resourceImpl, EmailService emailService) {
+       this.reservationImpl = reservationImpl;
+       this.userServiceImpl = userServiceImpl;
+       this.resourceImpl = resourceImpl;
+       this.emailService = emailService;
+    }
 
-	@GetMapping(LIST)
-	public ModelAndView getReservationList() {
-		ModelAndView modelAndView = new ModelAndView(RESERVATION_PAGE);
-		List<Reservation> reservations = reservationImpl.findAll();
-		Map<Long, String> users = userServiceImpl.findAllUsers().stream()
-				.collect(Collectors.toMap(User::getUserId, User::getUserName));
-		Map<Long, String> resources = resourceImpl.findAll().stream().filter(Resource::isActive)
-				.collect(Collectors.toMap(Resource::getResourceId, Resource::getResourceName));
+    @GetMapping(LIST)
+    public ModelAndView getReservationList(){
+        ModelAndView modelAndView = new ModelAndView(CALENDAR);
+        List<Reservation> reservations = reservationImpl.findAll();
+        Map<Long, String> users = userServiceImpl.findAllUsers().stream()
+            .collect(Collectors.toMap(User::getUserId, User::getUserName));
+        Map<Long, String> resources = resourceImpl.findAll().stream()
+            .filter(Resource::isActive)
+            .collect(Collectors.toMap(Resource::getResourceId, Resource::getResourceName));
 
-		List<ReservationView> reservationsView = reservations.stream().map(e -> getView(e, users, resources))
-				.collect(Collectors.toList());
-		modelAndView.addObject(VIEW, reservationsView);
-		modelAndView.addObject("dropdown", resources);
-		modelAndView.addObject(FORM, new ReservationForm());
-		return modelAndView;
-	}
+        Map<String, List<ReservationView>> reservationsView = reservations.stream().map(e -> getView(e, users, resources))
+                .collect(Collectors.toList())
+                .stream()
+                .collect(Collectors.groupingBy(ReservationView::getStartDate));
 
-	private ReservationView getView(Reservation reservation, Map<Long, String> users, Map<Long, String> resources) {
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(MM_DD_YYYY);
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(HH_MM);
-		return new ReservationView(reservation.getReservationId(), users.get(reservation.getUserId()),
-				resources.get(reservation.getResourceId()),
-				reservation.getStartDate().toLocalDate().format(dateFormatter),
-				reservation.getStartDate().toLocalTime().format(timeFormatter),
-				reservation.getEndDate().toLocalDate().format(dateFormatter),
-				reservation.getEndDate().toLocalTime().format(timeFormatter),
+        Gson gson = new Gson();
+        modelAndView.addObject(VIEW, gson.toJson(reservationsView));
+        modelAndView.addObject("dropdown", resources);
+        modelAndView.addObject(FORM, new ReservationForm());
+        return modelAndView;
+    }
+
+    private ReservationView getView(Reservation reservation, Map<Long, String> users, Map<Long, String> resources) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(MM_DD_YYYY);
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(HH_MM);
+        return new ReservationView(reservation.getReservationId(), users.get(reservation.getUserId()),
+                resources.get(reservation.getResourceId()),
+                reservation.getStartDate().toLocalDate().format(dateFormatter),
+                reservation.getStartDate().toLocalTime().format(timeFormatter),
+                reservation.getEndDate().toLocalDate().format(dateFormatter),
+                reservation.getEndDate().toLocalTime().format(timeFormatter),
                 reservation.getUserId(), reservation.getResourceId());
-	}
+    }
 
 	@GetMapping(EDIT)
 	@ResponseBody
 	public ReservationForm getById(@RequestParam(name = "reservationId") Long resourceId) {
+
 		UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Reservation reservation = reservationImpl.findById(resourceId)
             .filter(e -> user.getUserId().equals(e.getUserId()) 
                     || user.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.toString())))
-            .orElseThrow(); 
+            .orElseThrow();
 
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(MM_DD_YYYY);
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(HH_MM);
@@ -112,7 +117,8 @@ public class ReservationController implements NoticeInterface {
 				reservation.getStartDate().toLocalTime().format(timeFormatter),
 				reservation.getEndDate().toLocalDate().format(dateFormatter),
 				reservation.getEndDate().toLocalTime().format(timeFormatter));
-    }
+
+	}
 
 	@PostMapping(SAVE)
 	public ModelAndView save(@ModelAttribute(FORM) ReservationForm form, RedirectAttributes redirectAttributes)
@@ -139,27 +145,31 @@ public class ReservationController implements NoticeInterface {
 			sendMail(savedReservation);
 			addSuccessNotice("The resource has been successfully booked.");
 			displayNotice(redirectAttributes);
-			return new ModelAndView("redirect:" + RESERVATION_URI + LIST);
+			return new ModelAndView("redirect:" + CALENDAR_URI + LIST);
 		} catch (ValidationException e) {
             addModalErrorNotice(e.getError());
-			ModelAndView modelAndView = new ModelAndView(RESERVATION_PAGE);
+			ModelAndView modelAndView = new ModelAndView(CALENDAR);
 			List<Reservation> reservations = reservationImpl.findAll();
 			Map<Long, String> users = userServiceImpl.findAllUsers().stream()
 					.collect(Collectors.toMap(User::getUserId, User::getUserName));
 			Map<Long, String> resources = resourceImpl.findAll().stream().filter(Resource::isActive)
 					.collect(Collectors.toMap(Resource::getResourceId, Resource::getResourceName));
 
-			List<ReservationView> reservationsView = reservations.stream().map(e1 -> getView(e1, users, resources))
-					.collect(Collectors.toList());
-			modelAndView.addObject(VIEW, reservationsView);
+            Map<String, List<ReservationView>> reservationsView = reservations.stream()
+                    .map(r -> getView(r, users, resources))
+                    .collect(Collectors.toList())
+                    .stream()
+                    .collect(Collectors.groupingBy(ReservationView::getStartDate));
+
+            Gson gson = new Gson();
+
+            modelAndView.addObject(VIEW, gson.toJson(reservationsView));
 			modelAndView.addObject("dropdown", resources);
-			Gson gson = new Gson();
 			modelAndView.addObject(JS_FORM, gson.toJson(form));
 			displayModalNotice(modelAndView);
 			return modelAndView;
 		}
-
-	}
+    }
 
 	private void sendMail(Reservation savedReservation) throws MessagingException, IOException {
 
@@ -204,7 +214,7 @@ public class ReservationController implements NoticeInterface {
 	public ModelAndView delete(@RequestParam(name = "reservationId") Long reservationId,
 			RedirectAttributes redirectAttributes) {
 		clearNotices();
-		ModelAndView modelAndView = new ModelAndView("redirect:" + RESERVATION_URI + LIST);
+		ModelAndView modelAndView = new ModelAndView("redirect:" + CALENDAR_URI + LIST);
 		Reservation reservation = reservationImpl.findById(reservationId).orElseThrow();
 		try {
 			reservation.validateDelete(null);
@@ -216,4 +226,5 @@ public class ReservationController implements NoticeInterface {
 		displayNotice(redirectAttributes);
 		return modelAndView;
 	}
+
 }
