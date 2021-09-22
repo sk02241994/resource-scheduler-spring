@@ -42,12 +42,12 @@
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <form:input path="password" class="form-control my-3 p-4" placeholder="New Password"/>
+                                <form:password path="password" class="form-control my-3 p-4" placeholder="New Password"/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-7">
-                                <form:input path="confirmPassword" class="form-control my-3 p-4" placeholder="Confirm Password"/>
+                                <form:password path="confirmPassword" class="form-control my-3 p-4" placeholder="Confirm Password"/>
                             </div>
                         </div>
                         <div class="form-row">
